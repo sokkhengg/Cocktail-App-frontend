@@ -1,51 +1,52 @@
+// LoginForm.js
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom"; // Import useHistory
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-// import Link from "react-router-bootstrap";
-// import { LinkContainer } from 'react-router-bootstrap';
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Error from "./Error";
 
-
-function LoginForm({ setCurrentUser, currentUser }) {
+function LoginForm({ setCurrentUser }) {
   const [errors, setErrors] = useState([]);
-  const [success, setSuccess] = useState([]);
-
   const [isLoading, setIsLoading] = useState(false);
-
+  const history = useHistory(); // Initialize useHistory
 
   function handleLoginSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
-
-    console.log(e);
+    setErrors([]);
 
     const user_object = {
       username: e.target[0].value,
       password: e.target[1].value,
     };
 
-    fetch("login", {
-      //hits the "login" endpoint aka "session#create"
+    fetch("/login", {
+      // Hits the "login" endpoint
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user_object),
-    }).then((r) => {
-      if (r.ok) {
-      setIsLoading(false);
-        r.json().then((user) => {
-          setCurrentUser(user)
-          setSuccess(user)
-        });
-      } else {
-        r.json().then((err) => setErrors(err.errors));
-      }
-    });
+    })
+      .then((r) => {
+        setIsLoading(false);
+        if (r.ok) {
+          r.json().then((user) => {
+            setCurrentUser(user);
+            history.push("/"); // Redirect to home page
+          });
+        } else {
+          r.json().then((err) => setErrors(err.errors));
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setErrors(["Network error. Please try again."]);
+      });
   }
 
   return (
@@ -65,24 +66,24 @@ function LoginForm({ setCurrentUser, currentUser }) {
         <Row>
           <Col></Col>
           <Col xs={10}>
-            <Form onSubmit={(e) => handleLoginSubmit(e)}>
+            <Form onSubmit={handleLoginSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <FloatingLabel
-                  controlId="floatingTextarea"
+                  controlId="floatingUsername"
                   label="Username"
                   className="mb-3"
                 >
-                  <Form.Control type="text" placeholder="Enter username" />
+                  <Form.Control type="text" placeholder="Enter username" required />
                 </FloatingLabel>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <FloatingLabel
-                  controlId="floatingTextarea"
+                  controlId="floatingPassword"
                   label="Password"
                   className="mb-3"
                 >
-                  <Form.Control type="password" placeholder="Password" />
+                  <Form.Control type="password" placeholder="Password" required />
                 </FloatingLabel>
               </Form.Group>
 
@@ -90,25 +91,24 @@ function LoginForm({ setCurrentUser, currentUser }) {
                 <Col></Col>
                 <Col className="text-center">
                   <Button variant="primary" type="submit" id="login-button">
-                  {isLoading ? "Loading..." : "Login"}
+                    {isLoading ? "Loading..." : "Login"}
                   </Button>
                 </Col>
                 <Col></Col>
-                <br/>
+              </Row>
+
+              {errors.length > 0 && (
                 <Container className="text-center">
                   <br />
-        {errors.map((err) => (
-          <Error key={err}>{err}</Error>
-        ))}
-        {success.map((err) => (
-          <Error key={err}>{err}</Error>
-        ))}
-      </Container>
-              </Row>
+                  {errors.map((err) => (
+                    <Error key={err}>{err}</Error>
+                  ))}
+                </Container>
+              )}
             </Form>
           </Col>
           <Col></Col>
-        </Row>        
+        </Row>
         <Row>&nbsp;</Row>
         <Row>&nbsp;</Row>
       </Container>

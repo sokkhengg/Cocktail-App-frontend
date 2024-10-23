@@ -1,4 +1,6 @@
+// SignupForm.js
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom"; // Import useHistory
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
@@ -10,6 +12,7 @@ import Error from "./Error";
 function SignupForm({ setCurrentUser }) {
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory(); // Initialize useHistory
 
   function handleSignupSubmit(e) {
     e.preventDefault();
@@ -21,9 +24,8 @@ function SignupForm({ setCurrentUser }) {
       password: e.target[1].value,
     };
 
-
-    fetch("signup", {
-      // hits the users#create endpoint to add a new user to the database
+    fetch("/signup", {
+      // Hits the users#create endpoint
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,20 +33,21 @@ function SignupForm({ setCurrentUser }) {
       body: JSON.stringify(user_object),
     })
       .then((r) => {
-      setIsLoading(false);
+        setIsLoading(false);
         if (r.ok) {
           r.json().then((user) => {
-            setCurrentUser(user)
-            //window.location = "/my-liquor-cabinet";
+            setCurrentUser(user);
+            history.push("/my-liquor-cabinet"); // Redirect after signup
           });
-          
-
         } else {
           r.json().then((err) => setErrors(err.errors));
         }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        setErrors(["Network error. Please try again."]);
       });
   }
-  //display error message on frontend
 
   return (
     <>
@@ -62,42 +65,44 @@ function SignupForm({ setCurrentUser }) {
           <Col></Col>
           <Col xs={10}>
             <Form onSubmit={handleSignupSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                {/* <Form.Label>Username</Form.Label> */}
+              <Form.Group className="mb-3" controlId="formBasicUsername">
                 <FloatingLabel
-                  controlId="floatingTextarea"
+                  controlId="floatingUsername"
                   label="Username"
                   className="mb-3"
                 >
-                  <Form.Control type="text" placeholder="Enter username" />
+                  <Form.Control type="text" placeholder="Enter username" required />
                 </FloatingLabel>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <FloatingLabel
-                  controlId="floatingTextarea"
+                  controlId="floatingPassword"
                   label="Password"
                   className="mb-3"
                 >
-                  <Form.Control type="password" placeholder="Password" />
+                  <Form.Control type="password" placeholder="Password" required />
                 </FloatingLabel>
               </Form.Group>
 
               <Row>
                 <Col></Col>
                 <Col className="text-center">
-                  <Button variant="primary" type="submit" id="login-button">
-                  {isLoading ? "Loading..." : "Sign Up"}
+                  <Button variant="primary" type="submit" id="signup-button">
+                    {isLoading ? "Loading..." : "Sign Up"}
                   </Button>
                 </Col>
                 <Col></Col>
-                  <br/>
-                <Container>
-        {errors.map((err) => (
-          <Error key={err}>{err}</Error>
-        ))}
-      </Container>
               </Row>
+
+              {errors.length > 0 && (
+                <Container className="text-center">
+                  <br />
+                  {errors.map((err) => (
+                    <Error key={err}>{err}</Error>
+                  ))}
+                </Container>
+              )}
             </Form>
           </Col>
           <Col></Col>
