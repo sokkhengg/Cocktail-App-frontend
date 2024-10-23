@@ -70,7 +70,7 @@ function CreatorCards() {
                   <Card.Body>
                       
                     <Card.Title className="creator-title">
-                      Sok Heng
+                      Sokheng Teang
                     </Card.Title>
                     <Row>&nbsp;</Row>
                     <Row>

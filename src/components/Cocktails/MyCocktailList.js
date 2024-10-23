@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Card from "react-bootstrap/esm/Card";
+import Card from "react-bootstrap/Card";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CocktailCard from "./CocktailCard";
-import "./Cocktail.css";
-
-// https://www.npmjs.com/package/react-spinners
 import PulseLoader from "react-spinners/PulseLoader";
 
 function MyCocktailList({ currentUser }) {
@@ -16,28 +13,21 @@ function MyCocktailList({ currentUser }) {
   const [likedCocktails, setLikedCocktails] = useState([]);
 
   useEffect(() => {
-    fetch(`/my-custom-cocktails/?id=1`)
+    fetch(`/my-custom-cocktails/?id=${currentUser.id}`)
       .then((r) => r.json())
       .then((r) => {
         setMyCocktails(r);
         setLoading(false);
       });
-  }, []);
+  }, [currentUser.id]);
 
-    //getting likes, reviews, made status
-    useEffect(() => {
-      fetch(`/user_cocktails/1`)
-        .then((r) => r.json())
-        .then((r) => setLikedCocktails(r));
-    }, [likedAction]);
-  
-    // create an array of the liked cocktail's ids
-    const likedCocktailsIdArray = [];
-    likedCocktails.map((c) => {
-      likedCocktailsIdArray.push(c.cocktail.id);
-    });
-    console.log(likedCocktailsIdArray)
-    console.log(myCocktails)
+  useEffect(() => {
+    fetch(`/user_cocktails/${currentUser.id}`)
+      .then((r) => r.json())
+      .then((r) => setLikedCocktails(r));
+  }, [likedAction, currentUser.id]);
+
+  const likedCocktailsIdArray = likedCocktails.map((c) => c.cocktail.id);
 
   return (
     <div>
@@ -46,7 +36,7 @@ function MyCocktailList({ currentUser }) {
           <Row>
             <Col></Col>
             <Col className="text-center">
-            <PulseLoader color={"#d3a526"} loading={loading} size={50} />
+              <PulseLoader color={"#d3a526"} loading={loading} size={50} />
             </Col>
             <Col></Col>
           </Row>
@@ -62,52 +52,17 @@ function MyCocktailList({ currentUser }) {
           </Card>
 
           <Container>
-            <Row
-              xs={1}
-              md={3}
-              //className="g-4"
-              className="d-flex justify-content-center"
-            >
-
-
-
-{myCocktails
-            ? myCocktails.map((cock) => {
-                if (likedCocktailsIdArray.includes(cock.id))
-                  return (
-                    <CocktailCard
-                      key={cock.id}
-                      cocktail={cock}
-                      currentUser={currentUser}
-                      liked={true}
-                      setLikedAction={setLikedAction}
-                      likedAction={likedAction}
-                    />
-                  )
-                else
-                  return (
-                    
-                    <CocktailCard
-                      key={cock.id}
-                      cocktail={cock}
-                      currentUser={currentUser}
-                      liked={false}
-                      setLikedAction={setLikedAction}
-                      likedAction={likedAction}
-                    />
-                  );
-              })
-            : null}
-
-
-
-
-
-              {myCocktails
-                ? myCocktails.map((cock) => (
-                    <CocktailCard key={cock.id} cocktail={cock} currentUser={currentUser} liked={true}likedAction={likedAction} setLikedAction={setLikedAction} />
-                  ))
-                : null}
+            <Row xs={1} md={3} className="d-flex justify-content-center">
+              {myCocktails.map((cock) => (
+                <CocktailCard
+                  key={cock.id}
+                  cocktail={cock}
+                  currentUser={currentUser}
+                  liked={likedCocktailsIdArray.includes(cock.id)}
+                  setLikedAction={setLikedAction}
+                  likedAction={likedAction}
+                />
+              ))}
             </Row>
           </Container>
         </>
