@@ -10,6 +10,8 @@ import CocktailForm from "./components/Cocktails/CocktailForm";
 import MyLiquorCabinet from "./components/User/MyLiquorCabinet";
 import CocktailDetail from "./components/Cocktails/CocktailDetail";
 import Carousel from "./components/Home/Carousel";
+import { API_BASE_URL } from './config';
+
 // import PopularCocktails from "./components/Cocktails/PopularCocktails";
 
 function App() {
@@ -20,29 +22,26 @@ function App() {
 
   // auth keeps the user logged in as they move through the app (doesn't work if the page is refreshed!)
   useEffect(() => {
-    fetch("auth") // hits the auth endpoint aka users#show in the UsersController
+    fetch(`${API_BASE_URL}/auth`)
       .then((res) => {
         if (res.ok) {
-          res.json().then((user) => setCurrentUser([user])); // sets the state
+          res.json().then((user) => setCurrentUser([user]));
         }
+      })
+      .catch((error) => {
+        console.error('Error fetching auth:', error);
       });
   }, []);
 
-  //console.log(cocktails)
-
-  //Filters cocktails
-  // const [cocktailSearch, setCocktailSearch] = useState('');
-
-  // const cocktailsToDisplay = cocktails.filter((cocktail) => {
-  //   cocktail.name.toLowerCase().includes(cocktailSearch.toLowerCase());
-  // })
-
-  // grabs all ingredients from the backend, for use in various forms
   useEffect(() => {
-    fetch("/ingredients")
+    fetch(`${API_BASE_URL}/ingredients`)
       .then((r) => r.json())
-      .then((ingredients) => setIngredients(ingredients));
+      .then((ingredients) => setIngredients(ingredients))
+      .catch((error) => {
+        console.error('Error fetching ingredients:', error);
+      });
   }, []);
+
 
   //console.log(cocktails)
 
