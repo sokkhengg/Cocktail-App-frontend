@@ -22,7 +22,9 @@ function App() {
 
   // auth keeps the user logged in as they move through the app (doesn't work if the page is refreshed!)
   useEffect(() => {
-    fetch(`${API_BASE_URL}/auth`)
+    fetch(`${API_BASE_URL}/auth`, {
+      credentials: 'include',
+    })
       .then((res) => {
         if (res.ok) {
           res.json().then((user) => setCurrentUser([user]));
@@ -32,6 +34,7 @@ function App() {
         console.error('Error fetching auth:', error);
       });
   }, []);
+  
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/ingredients`)
