@@ -69,23 +69,35 @@ function LoginForm({ setCurrentUser }) {
           <Col xs={10}>
             <Form onSubmit={handleLoginSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
-                <FloatingLabel
-                  controlId="floatingUsername"
-                  label="Username"
-                  className="mb-3"
-                >
-                  <Form.Control type="text" placeholder="Enter username" required />
-                </FloatingLabel>
+              <FloatingLabel
+  controlId="floatingUsernameLogin"
+  label="Username"
+  className="mb-3"
+>
+  <Form.Control
+    type="text"
+    placeholder="Enter username"
+    required
+    id="floatingUsernameLogin"
+  />
+</FloatingLabel>
+
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <FloatingLabel
-                  controlId="floatingPassword"
-                  label="Password"
-                  className="mb-3"
-                >
-                  <Form.Control type="password" placeholder="Password" required />
-                </FloatingLabel>
+              <FloatingLabel
+  controlId="floatingPasswordLogin"
+  label="Password"
+  className="mb-3"
+>
+  <Form.Control
+    type="password"
+    placeholder="Password"
+    required
+    id="floatingPasswordLogin"
+  />
+</FloatingLabel>
+
               </Form.Group>
 
               <Row>

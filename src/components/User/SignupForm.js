@@ -66,23 +66,35 @@ function SignupForm({ setCurrentUser }) {
           <Col xs={10}>
             <Form onSubmit={handleSignupSubmit}>
               <Form.Group className="mb-3" controlId="formBasicUsername">
-                <FloatingLabel
-                  controlId="floatingUsername"
-                  label="Username"
-                  className="mb-3"
-                >
-                  <Form.Control type="text" placeholder="Enter username" required />
-                </FloatingLabel>
+              <FloatingLabel
+  controlId="floatingUsernameSignup"
+  label="Username"
+  className="mb-3"
+>
+  <Form.Control
+    type="text"
+    placeholder="Enter username"
+    required
+    id="floatingUsernameSignup"
+  />
+</FloatingLabel>
+
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="formBasicPassword">
-                <FloatingLabel
-                  controlId="floatingPassword"
-                  label="Password"
-                  className="mb-3"
-                >
-                  <Form.Control type="password" placeholder="Password" required />
-                </FloatingLabel>
+              <FloatingLabel
+  controlId="floatingPasswordSignup"
+  label="Password"
+  className="mb-3"
+>
+  <Form.Control
+    type="password"
+    placeholder="Password"
+    required
+    id="floatingPasswordSignup"
+  />
+</FloatingLabel>
+
               </Form.Group>
 
               <Row>
